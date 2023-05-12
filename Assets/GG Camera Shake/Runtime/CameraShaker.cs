@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-
+using EvolveGames;
 namespace CameraShake
 {
     /// <summary>
@@ -16,7 +16,7 @@ namespace CameraShake
         [Tooltip("Transform which will be affected by the shakes.\n\nCameraShaker will set this transform's local position and rotation.")]
         [SerializeField]
         Transform cameraTransform;
-        
+
 
         [Tooltip("Scales the strength of all shakes.")]
         [Range(0, 1)]
@@ -42,6 +42,9 @@ namespace CameraShake
         {
             shake.Initialize(cameraTransform.position,
                 cameraTransform.rotation);
+
+
+            Debug.Log("registered");
             activeShakes.Add(shake);
         }
 
@@ -73,16 +76,24 @@ namespace CameraShake
             {
                 if (activeShakes[i].IsFinished)
                 {
+                    //PlayerController player = GameObject.FindWithTag("GameController").GetComponent<PlayerController>();
+                    //   player.rotationX += (StrengthMultiplier * activeShakes[i].CurrentDisplacement.eulerAngles).x;
+                    Debug.Log((StrengthMultiplier * activeShakes[i].CurrentDisplacement.eulerAngles).x);
                     activeShakes.RemoveAt(i);
                 }
                 else
                 {
                     activeShakes[i].Update(Time.deltaTime, cameraTransform.position, cameraTransform.rotation);
+
                     cameraDisplacement += activeShakes[i].CurrentDisplacement;
                 }
             }
-            cameraTransform.localPosition = StrengthMultiplier * cameraDisplacement.position;
+
+            //cameraTransform.localPosition = StrengthMultiplier * cameraDisplacement.position;
+ 
             cameraTransform.localRotation = Quaternion.Euler(StrengthMultiplier * cameraDisplacement.eulerAngles);
+
+
         }
 
         private static bool IsInstanceNull()

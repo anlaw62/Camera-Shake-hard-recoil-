@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using EvolveGames;
 namespace CameraShake
 {
     public class KickShake : ICameraShake
@@ -58,8 +58,10 @@ namespace CameraShake
             if (t < 1)
             {
                 Move(deltaTime,
-                    release ? pars.releaseTime : pars.attackTime,
+                   release ? pars.releaseTime : pars.attackTime,
                     release ? pars.releaseCurve : pars.attackCurve);
+                Debug.Log(pars.strength.eulerAngles.x);
+
             }
             else
             {
@@ -73,6 +75,8 @@ namespace CameraShake
                 else
                 {
                     release = true;
+                    PlayerController player = GameObject.FindWithTag("GameController").GetComponent<PlayerController>();
+                    player.rotationX -= (pars.strength.eulerAngles.x - 10f); // здесь отнимаем от переменной отвечающей за ротацию по x, заданный угл, число отнимаем чтобы эффект тряски по x оставался
                     t = 0;
                     currentWaypoint = Displacement.Zero;
                 }
@@ -82,10 +86,21 @@ namespace CameraShake
         private void Move(float deltaTime, float duration, AnimationCurve curve)
         {
             if (duration > 0)
+            {
                 t += deltaTime / duration;
+
+            }
+
             else
+            {
+
                 t = 1;
+            }
+
             CurrentDisplacement = Displacement.Lerp(prevWaypoint, currentWaypoint, curve.Evaluate(t));
+            //  PlayerController player = GameObject.FindWithTag("GameController").GetComponent<PlayerController>();
+            // player.rotationX += CurrentDisplacement.eulerAngles.x;
+
         }
 
         [System.Serializable]
